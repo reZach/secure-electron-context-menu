@@ -53,10 +53,10 @@ export default class ContextMenu {
             // Build our context menu based on our templates
             let contextMenu = templates[args.option];
             if (isDevelopment) {
-                contextMenu.add({
+                contextMenu.push({
                     label: "Inspect element",
                     click: () => {
-                        mainWindow.inspectElement(args.x, args.y);
+                        browserWindow.inspectElement(args.x, args.y);
                     }
                 });
             }
