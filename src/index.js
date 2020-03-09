@@ -64,7 +64,7 @@ class ContextMenu {
                 if (typeof this.internalFnMap[args.id] !== "undefined") {
                     let payload = {
                         params: this.contextMenuParams,
-                        payload: this.selectedElementAttributes
+                        attributes: this.selectedElementAttributes
                     };
                     this.internalFnMap[args.id](payload);
                 }
