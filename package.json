@@ -1,6 +1,6 @@
 {
   "name": "secure-electron-context-menu",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A secure way to implement a context menu in electron apps.",
   "main": "lib/index.js",
   "scripts": {
@@ -10,7 +10,12 @@
     "type": "git",
     "url": "git+https://github.com/reZach/secure-electron-context-menu.git"
   },
-  "keywords": ["context", "menu", "electron", "secure"],
+  "keywords": [
+    "context",
+    "menu",
+    "electron",
+    "secure"
+  ],
   "author": "reZach",
   "license": "MIT",
   "bugs": {
@@ -23,5 +28,7 @@
     "@babel/preset-env": "^7.8.7",
     "babel-preset-minify": "^0.5.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "lodash.clonedeep": "^4.5.0"
+  }
 }
