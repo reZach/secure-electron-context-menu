@@ -158,12 +158,14 @@ class Component extends React.Component {
     super(props);
   }
 
-  componentDidMount() {
+  componentWillUnmount() {    
     // Clear any existing bindings;
     // important on mac-os if the app is suspended
     // and resumed. Existing subscriptions must be cleared
     window.api.contextMenu.clearRendererBindings();
+  }
 
+  componentDidMount() {
     // Set up binding in code whenever the context menu item
     // of id "alert" is selected
     window.api.contextMenu.onReceive("alert", function(args) {
