@@ -72,45 +72,24 @@ class ContextMenu {
             });
 
             ipcRenderer.on(contextMenuClicked, (event, args) => {
-
-                // If we have an array of elements, mapping to the specific
-                // function that should be called when the context menu item
-                // is clicked will not work, because each element would have
-                // the same html attributes.
-                // In order to distinguish between which element of an array
-                // was clicked, we use the 'this.id' property that was saved
-                // when the element was right-clicked. This value becomes a 
-                // unique identifier that we use to call the proper callback function.
-                // If no id was defined, we simply fallback to existing behavior
-                let isPrepend = args.id.indexOf("___") >= 0;
-
-                if (isPrepend) {
-                    let idSplit = args.id.split("___");
-
-                    // Drop the command if the ids don't match
-                    if (idSplit[0] !== this.id){
-                        return;
-                    }
-
-                    if (typeof this.internalFnMap[args.id] === "undefined") {
-                        this.internalFnMap[args.id] = this.stagedInternalFnMap[idSplit[1]];
-                    }
-                } else if (typeof this.internalFnMap[args.id] === "undefined") {
-                    this.internalFnMap[args.id] = this.stagedInternalFnMap[args.id];
+                if (typeof this.internalFnMap[args.id] !== "undefined") {
+                    let payload = {
+                        params: this.contextMenuParams,
+                        attributes: this.selectedElementAttributes
+                    };
+                    this.internalFnMap[args.id](payload);
                 }
-
-                let payload = {
-                    params: this.contextMenuParams,
-                    attributes: this.selectedElementAttributes
-                };
-                this.internalFnMap[args.id](payload);
             });
         };
         createIpcBindings();
 
         return {
-            onReceive: (id, func) => {
-                this.stagedInternalFnMap[id] = func;
+            onReceive: (menuActionId, func, id) => {
+                if (typeof id === "undefined"){
+                    this.internalFnMap[menuActionId] = func;
+                } else {
+                    this.internalFnMap[`${id}___${menuActionId}`] = func;
+                }
             },
             clearRendererBindings: () => {
                 this.stagedInternalFnMap = {};
@@ -134,7 +113,7 @@ class ContextMenu {
         });
 
         ipcMain.on(contextMenuResponse, (IpcMainEvent, args) => {
-
+            
             // id prepend; if we have a list of common elements,
             // certain bindings may not work because each element would have
             // registered for the same event name. In these cases, prepend each

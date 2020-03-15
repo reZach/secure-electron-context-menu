@@ -204,26 +204,119 @@ What is needed is to create bindings in code using `window.api.contextMenu.onRec
 It is also important to use the `clearRendererBindings` function as seen above, this is important on MacOS.
 
 ## Context menus for items in a collection
-If you are creating context menus for items in a collection, you need to add an `cm-id` attribute on your element, otherwise - the element you initiated the context menu with (ie., by right-clicking) may not be the element that receives the event!
+If you are creating context menus for items in a collection, you need to add an `cm-id` attribute on your element _and_ on the `.onReceive` listener, otherwise - the element you initiated the context menu with (ie., by right-clicking) may not be the element that receives the event!
 
-> It does not matter what the value of `cm-id` is, so long as it is unique between all elements that use the same template!
+> It does not matter what the value of `cm-id`/onReceive event is, so long as it is unique between all elements that use the same template!
 
-Instead of this:
-```html
-<div cm-template="alertTemplate" cm-payload-name="Jane">
-  Alert Jane
-</div>
-<div cm-template="alertTemplate" cm-payload-name="Bob">
-  Alert Bob
-</div>
+Assuming `Sample` is a component that you would render a collection of; instead of this:
+```jsx
+import React from "react";
+
+class Sample extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      name: "reZach"
+    };
+
+    this.changeName = this.changeName.bind(this);
+  }
+
+  componentWillUnmount() {
+    window.api.contextMenu.clearRendererBindings();
+  }
+
+  componentDidMount() {
+    window.api.contextMenu.onReceive(
+      "log",
+      function(args) {
+        console.log(args.attributes.name);
+      }.bind(this)
+    );
+  }
+
+  changeName() {
+    const names = ["Bob", "Jill", "Jane"];
+    let newIndex = Math.floor(Math.random() * 3);
+    this.setState((state) => ({
+      name: names[newIndex]
+    }));
+  }
+
+  render() {
+    return (
+      <div>
+        <input
+          type="button"
+          onClick={this.changeName}
+          value="Random name"></input>
+        <div
+          cm-template="logTemplate"
+          cm-payload-name={this.state.name}>
+          Right-click me for a custom context menu
+        </div>
+      </div>
+    );
+  }
+}
 ```
 
 Do this:
-```html
-<div cm-template="alertTemplate" cm-id="1" cm-payload-name="Jane">
-  Alert Jane
-</div>
-<div cm-template="alertTemplate" cm-id="2" cm-payload-name="Bob">
-  Alert Bob
-</div>
+```jsx
+import React from "react";
+
+class Sample extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      name: "reZach"
+    };
+
+    this.uniqueId = "Sample 1"; // In production apps, you'd make this unique per Sample (ie. use a Sample's id or a GUID)
+
+    this.changeName = this.changeName.bind(this);
+  }
+
+  componentWillUnmount() {
+    window.api.contextMenu.clearRendererBindings();
+  }
+
+  componentDidMount() {
+    window.api.contextMenu.onReceive(
+      "log",
+      function(args) {
+        console.log(args.attributes.name);
+      }.bind(this),
+      this.uniqueId /* added! */
+    );
+  }
+
+  changeName() {
+    const names = ["Bob", "Jill", "Jane"];
+    let newIndex = Math.floor(Math.random() * 3);
+    this.setState((state) => ({
+      name: names[newIndex]
+    }));
+  }
+
+  render() {
+    return (
+      <div>
+        <input
+          type="button"
+          onClick={this.changeName}
+          value="Random name"></input>
+        <div
+          cm-template="logTemplate"
+          cm-id={this.uniqueId} {/* added! */}
+          cm-payload-name={this.state.name}>
+          Right-click me for a custom context menu
+        </div>
+      </div>
+    );
+  }
+}
+
 ```
