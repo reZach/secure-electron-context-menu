@@ -1,6 +1,12 @@
 # secure-electron-context-menu
 A secure way to implement a context menu in electron apps. Create custom (or electron-defined) context menus. This package was designed to work within [`secure-electron-template`](https://github.com/reZach/secure-electron-template).
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=reZach_secure-electron-context-menu&metric=alert_status)](https://sonarcloud.io/dashboard?id=reZach_secure-electron-context-menu)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=reZach_secure-electron-context-menu&metric=security_rating)](https://sonarcloud.io/dashboard?id=reZach_secure-electron-context-menu)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=reZach_secure-electron-context-menu&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=reZach_secure-electron-context-menu)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=reZach_secure-electron-context-menu&metric=bugs)](https://sonarcloud.io/dashboard?id=reZach_secure-electron-context-menu)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=reZach_secure-electron-context-menu&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=reZach_secure-electron-context-menu)
+
 ![Context menu](https://github.com/reZach/secure-electron-context-menu/blob/master/docs/contextmenu.png "Context menu")
 
 ## Getting started

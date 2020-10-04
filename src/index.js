@@ -44,12 +44,12 @@ class ContextMenu {
                 this.selectedElement = document.elementFromPoint(args.params.x, args.params.y);
                 if (this.selectedElement !== null) {
 
-                    let contextMenuTemplate = this.selectedElement.getAttribute(this.options.templateAttributeName);
+                    const contextMenuTemplate = this.selectedElement.getAttribute(this.options.templateAttributeName);
                     if (contextMenuTemplate !== "" && contextMenuTemplate !== null) {
 
                         // Save all attribute values for later-use when
                         // we call the callback defined for this context menu item
-                        let attributes = this.selectedElement.attributes;
+                        const attributes = this.selectedElement.attributes;
                         for (let i = 0; i < attributes.length; i++) {
                             if (attributes[i].name.indexOf(this.options.payloadAttributeName) >= 0) {
                                 this.selectedElementAttributes[attributes[i].name.replace(`${this.options.payloadAttributeName}-`, "")] = attributes[i].value;
@@ -73,7 +73,7 @@ class ContextMenu {
 
             ipcRenderer.on(contextMenuClicked, (event, args) => {
                 if (typeof this.internalFnMap[args.id] !== "undefined") {
-                    let payload = {
+                    const payload = {
                         params: this.contextMenuParams,
                         attributes: this.selectedElementAttributes
                     };
@@ -119,16 +119,16 @@ class ContextMenu {
             // registered for the same event name. In these cases, prepend each
             // menu item with the unique id passed in so that each individual
             // component can respond appropriately to the context menu action
-            let idPrepend = args.id ? `${args.id}___` : "";
-            let cleanedTemplatesKey = `${idPrepend}${args.template}`;
+            const idPrepend = args.id ? `${args.id}___` : "";
+            const cleanedTemplatesKey = `${idPrepend}${args.template}`;
 
-            let contextMenu;
+            let generatedContextMenu;
             if (args.template === null || typeof this.cleanedTemplates[cleanedTemplatesKey] === "undefined") {
 
                 // Build our context menu based on our templates
-                contextMenu = templates[args.template] ? cloneDeep(templates[args.template]) : [];
+                generatedContextMenu = templates[args.template] ? cloneDeep(templates[args.template]) : [];
                 if (isDevelopment) {
-                    contextMenu.push({
+                    generatedContextMenu.push({
                         label: "Inspect element",
                         click: () => {
                             browserWindow.inspectElement(args.params.x, args.params.y);
@@ -140,11 +140,11 @@ class ContextMenu {
 
                     // For any menu items that don't have a role or click event,
                     // create one so we can tie back the click to the code!
-                    for (let i = 0; i < contextMenu.length; i++) {
-                        if (typeof contextMenu[i]["click"] === "undefined") {
-                            contextMenu[i].click = function (event, window, webContents) {
+                    for (let i = 0; i < generatedContextMenu.length; i++) {
+                        if (typeof generatedContextMenu[i]["click"] === "undefined") {
+                            generatedContextMenu[i].click = function (event, window, webContents) {
                                 browserWindow.webContents.send(contextMenuClicked, {
-                                    id: `${idPrepend}${(contextMenu[i].id || contextMenu[i].label)}`
+                                    id: `${idPrepend}${(generatedContextMenu[i].id || generatedContextMenu[i].label)}`
                                 });
                             }
                         }
@@ -152,11 +152,11 @@ class ContextMenu {
                 }
 
                 // Save this cleaned template, so we can re-use it
-                this.cleanedTemplates[cleanedTemplatesKey] = contextMenu;
+                this.cleanedTemplates[cleanedTemplatesKey] = generatedContextMenu;
             }             
-            contextMenu = this.cleanedTemplates[cleanedTemplatesKey];
+            generatedContextMenu = this.cleanedTemplates[cleanedTemplatesKey];
 
-            Menu.buildFromTemplate(contextMenu).popup(browserWindow);
+            Menu.buildFromTemplate(generatedContextMenu).popup(browserWindow);
         });
     }
 
