@@ -27,6 +27,26 @@ class ContextMenu {
         }
     }
 
+    findContextElement(element, x, y) {
+        if (!element) {
+            return null;
+        }
+
+        // Check if current cursor is inside element
+        const { top, left, right, bottom } = element.getBoundingClientRect();
+        if (x < left || x > right || y < top || y > bottom) {
+            return null;
+        }
+
+        // Check if it has context value
+        const contextTemplate = element.getAttribute(this.options.templateAttributeName)
+        if (contextTemplate !== "" && contextTemplate !== null) {
+            return element;
+        }
+
+        return this.findContextElement(element.parentElement, x, y);
+    }
+
     preloadBindings(ipcRenderer) {
 
         const createIpcBindings = () => {
@@ -41,7 +61,7 @@ class ContextMenu {
                 this.contextMenuParams = args.params;
 
                 // Grab the element where the user clicked
-                this.selectedElement = document.elementFromPoint(args.params.x, args.params.y);
+                this.selectedElement = this.findContextElement(document.elementFromPoint(args.params.x, args.params.y), args.params.x, args.params.y);
                 if (this.selectedElement !== null) {
 
                     const contextMenuTemplate = this.selectedElement.getAttribute(this.options.templateAttributeName);
@@ -85,7 +105,7 @@ class ContextMenu {
 
         return {
             onReceive: (menuActionId, func, id) => {
-                if (typeof id === "undefined"){
+                if (typeof id === "undefined") {
                     this.internalFnMap[menuActionId] = func;
                 } else {
                     this.internalFnMap[`${id}___${menuActionId}`] = func;
@@ -113,7 +133,7 @@ class ContextMenu {
         });
 
         ipcMain.on(contextMenuResponse, (IpcMainEvent, args) => {
-            
+
             // id prepend; if we have a list of common elements,
             // certain bindings may not work because each element would have
             // registered for the same event name. In these cases, prepend each
@@ -153,7 +173,7 @@ class ContextMenu {
 
                 // Save this cleaned template, so we can re-use it
                 this.cleanedTemplates[cleanedTemplatesKey] = generatedContextMenu;
-            }             
+            }
             generatedContextMenu = this.cleanedTemplates[cleanedTemplatesKey];
 
             Menu.buildFromTemplate(generatedContextMenu).popup(browserWindow);
