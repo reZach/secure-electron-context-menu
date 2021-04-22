@@ -70,11 +70,12 @@ class ContextMenu {
                         // Save all attribute values for later-use when
                         // we call the callback defined for this context menu item
                         const attributes = this.selectedElement.attributes;
-                        for (let i = 0; i < attributes.length; i++) {
-                            if (attributes[i].name.indexOf(this.options.payloadAttributeName) >= 0) {
-                                this.selectedElementAttributes[attributes[i].name.replace(`${this.options.payloadAttributeName}-`, "")] = attributes[i].value;
-                            } else if (attributes[i].name.indexOf(this.options.idAttributeName) >= 0) {
-                                this.id = attributes[i].value;
+                        for (const attribute of attributes)
+                        {
+                            if (attribute.name.indexOf(this.options.payloadAttributeName) >= 0) {
+                                this.selectedElementAttributes[attribute.name.replace(`${this.options.payloadAttributeName}-`, "")] = attribute.value;
+                            } else if (attribute.name.indexOf(this.options.idAttributeName) >= 0) {
+                                this.id = attribute.value;
                             }
                         }
 
@@ -160,11 +161,12 @@ class ContextMenu {
 
                     // For any menu items that don't have a role or click event,
                     // create one so we can tie back the click to the code!
-                    for (let i = 0; i < generatedContextMenu.length; i++) {
-                        if (typeof generatedContextMenu[i]["click"] === "undefined") {
-                            generatedContextMenu[i].click = function (event, window, webContents) {
+                    for (let menu of generatedContextMenu)
+                    {
+                        if (typeof menu["click"] === "undefined") {
+                            menu.click = function (event, window, webContents) {
                                 browserWindow.webContents.send(contextMenuClicked, {
-                                    id: `${idPrepend}${(generatedContextMenu[i].id || generatedContextMenu[i].label)}`
+                                    id: `${idPrepend}${(menu.id || menu.label)}`
                                 });
                             }
                         }
