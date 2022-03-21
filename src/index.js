@@ -70,8 +70,7 @@ class ContextMenu {
                         // Save all attribute values for later-use when
                         // we call the callback defined for this context menu item
                         const attributes = this.selectedElement.attributes;
-                        for (const attribute of attributes)
-                        {
+                        for (const attribute of attributes) {
                             if (attribute.name.indexOf(this.options.payloadAttributeName) >= 0) {
                                 this.selectedElementAttributes[attribute.name.replace(`${this.options.payloadAttributeName}-`, "")] = attribute.value;
                             } else if (attribute.name.indexOf(this.options.idAttributeName) >= 0) {
@@ -143,7 +142,22 @@ class ContextMenu {
             const idPrepend = args.id ? `${args.id}___` : "";
             const cleanedTemplatesKey = `${idPrepend}${args.template}`;
 
-            let generatedContextMenu;
+            // Build suggestions elements
+            const suggestions = args.params.dictionarySuggestions.map(x => {
+                return {
+                    label: x,
+                    click: () => {
+                        browserWindow.webContents.replaceMisspelling(x)
+                    }
+                }
+            })
+
+            if (suggestions.length > 0)
+                suggestions.push({
+                    type: "separator",
+                })
+
+            let generatedContextMenu = []
             if (args.template === null || typeof this.cleanedTemplates[cleanedTemplatesKey] === "undefined") {
 
                 // Build our context menu based on our templates
@@ -161,8 +175,7 @@ class ContextMenu {
 
                     // For any menu items that don't have a role or click event,
                     // create one so we can tie back the click to the code!
-                    for (let menu of generatedContextMenu)
-                    {
+                    for (let menu of generatedContextMenu) {
                         if (typeof menu["click"] === "undefined") {
                             menu.click = function (event, window, webContents) {
                                 browserWindow.webContents.send(contextMenuClicked, {
@@ -176,9 +189,13 @@ class ContextMenu {
                 // Save this cleaned template, so we can re-use it
                 this.cleanedTemplates[cleanedTemplatesKey] = generatedContextMenu;
             }
-            generatedContextMenu = this.cleanedTemplates[cleanedTemplatesKey];
 
-            Menu.buildFromTemplate(generatedContextMenu).popup(browserWindow);
+
+            generatedContextMenu = [...suggestions, ...this.cleanedTemplates[cleanedTemplatesKey]]
+
+            // avoid showing and "Empty" menu in Windows when !isDevelopment
+            if (generatedContextMenu.length > 0)
+                Menu.buildFromTemplate(generatedContextMenu).popup(browserWindow);
         });
     }
 
