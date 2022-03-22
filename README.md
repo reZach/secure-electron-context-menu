@@ -340,7 +340,7 @@ class Sample extends React.Component {
 
 ```html
 <script>
-    import { onMount } from "svelte"
+    import { onMount, onDestroy } from "svelte"
 
     let newUser = {
         firstname: "",
@@ -352,13 +352,6 @@ class Sample extends React.Component {
             name: "John Doe",
         },
     ]
-
-    onMount(() => {
-        window.api.contextMenu.onReceive("log", (args) => {
-            const foundUser = users.find((x) => x.id == args.attributes.id)
-            console.log(foundUser)
-        })
-    })
 
     function addUser() {
         const user = {
@@ -373,6 +366,16 @@ class Sample extends React.Component {
             lastname: "",
         }
     }
+
+    onMount(() => {
+        window.api.contextMenu.onReceive("log", (args) => {
+            const foundUser = users.find((x) => x.id == args.attributes.id)
+            console.log(foundUser)
+        })
+    })
+    onDestroy(() => {
+        window.api.contextMenu.clearRendererBindings()
+    })
 </script>
 
 <div>
