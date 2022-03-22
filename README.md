@@ -335,3 +335,53 @@ class Sample extends React.Component {
 }
 
 ```
+
+## Svelte example
+
+```html
+<script>
+    import { onMount } from "svelte"
+
+    let newUser = {
+        firstname: "",
+        lastname: "",
+    }
+    let users = [
+        {
+            id: "1",
+            name: "John Doe",
+        },
+    ]
+
+    onMount(() => {
+        window.api.contextMenu.onReceive("log", (args) => {
+            const foundUser = users.find((x) => x.id == args.attributes.id)
+            console.log(foundUser)
+        })
+    })
+
+    function addUser() {
+        const user = {
+            id: users.length + 1,
+            firstname: newUser.firstname,
+            lastname: newUser.lastname,
+        }
+        users.push(user)
+        users = users
+        newUser = {
+            firstname: "",
+            lastname: "",
+        }
+    }
+</script>
+
+<div>
+    <input placeholder="firstname" bind:value="{newUser.firstname}" />
+    <input placeholder="lastname" bind:value="{newUser.lastname}" />
+    <button on:click="{addUser}">Add</button>
+</div>
+
+{#each users as user}
+<div cm-template="logTemplate" cm-id="{user.id}">{user.firstname} - Right-click me for a custom context menu</div>
+{/each}
+```
