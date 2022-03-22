@@ -1,34 +1,34 @@
 {
-  "name": "secure-electron-context-menu",
-  "version": "1.3.3",
-  "description": "A secure way to implement a context menu in electron apps.",
-  "main": "lib/index.js",
-  "scripts": {
-    "build": "npx babel ./src -d ./lib"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reZach/secure-electron-context-menu.git"
-  },
-  "keywords": [
-    "context",
-    "menu",
-    "electron",
-    "secure"
-  ],
-  "author": "reZach",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/reZach/secure-electron-context-menu/issues"
-  },
-  "homepage": "https://github.com/reZach/secure-electron-context-menu#readme",
-  "devDependencies": {
-    "@babel/cli": "^7.15.4",
-    "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.6",
-    "babel-preset-minify": "^0.5.1"
-  },
-  "dependencies": {
-    "lodash.clonedeep": "^4.5.0"
-  }
+    "name": "secure-electron-context-menu",
+    "version": "1.4.0",
+    "description": "A secure way to implement a context menu in electron apps.",
+    "main": "lib/index.js",
+    "scripts": {
+        "build": "npx babel ./src -d ./lib"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/reZach/secure-electron-context-menu.git"
+    },
+    "keywords": [
+        "context",
+        "menu",
+        "electron",
+        "secure"
+    ],
+    "author": "reZach",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/reZach/secure-electron-context-menu/issues"
+    },
+    "homepage": "https://github.com/reZach/secure-electron-context-menu#readme",
+    "devDependencies": {
+        "@babel/cli": "^7.17.6",
+        "@babel/core": "^7.17.8",
+        "@babel/preset-env": "^7.16.11",
+        "babel-preset-minify": "^0.5.1"
+    },
+    "dependencies": {
+        "lodash.clonedeep": "^4.5.0"
+    }
 }
