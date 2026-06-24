@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/reZach/secure-electron-context-menu#readme",
   "devDependencies": {
-    "@babel/cli": "^7.15.4",
-    "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.6",
+    "@babel/cli": "^8.0.1",
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
     "babel-preset-minify": "^0.5.1",
     "typescript": "^5.7.2"
   },
